@@ -13,6 +13,7 @@
     "expo-linking": "~57.0.7",
     "expo-router": "~57.0.16",
     "expo-splash-screen": "~57.0.8",
+    "expo-sqlite": "~57.0.1",
     "expo-status-bar": "~57.0.1",
     "expo-symbols": "~57.0.2",
     "expo-system-ui": "~57.0.2",
@@ -33,7 +34,7 @@
   },
   "scripts": {
     "start": "expo start",
-    "reset-project": "node ./scripts/reset-project.js",
+    "reset-project": "node ./scripts/reset.js",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
