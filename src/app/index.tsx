@@ -149,41 +149,99 @@ export default function Index() {
           data={notes}
           keyExtractor={(item: Note) => item.id.toString()}
           renderItem={({ item }) => {
+            const isEditing = editingId === item.id;
+
             return (
               <View style={styles.card}>
-                <View style={styles.cardContent}>
-                  <Text style={{ fontSize: 17, marginBottom: 6 }}>
-                    {item.title}
-                  </Text>
-                  <Text
-                    style={{ color: "#777", fontSize: 13, marginBottom: 10 }}
-                  >
-                    🕒 {formatDate(item.createdAt)}
-                  </Text>
-                </View>
                 <>
-                  <View style={styles.action}>
-                    <TouchableOpacity
-                      onPress={() => {
-                        setEditingId(item.id);
-                        setEditingText(item.title);
-                      }}
-                      style={styles.edit}
-                    >
-                      <Text style={{ color: "black", fontWeight: "600" }}>
-                        Edit
-                      </Text>
-                    </TouchableOpacity>
+                  {isEditing ? (
+                    <>
+                      <TextInput
+                        value={editingText}
+                        onChangeText={setEditingText}
+                        style={{
+                          borderWidth: 1,
+                          borderColor: "#aaa",
+                          padding: 10,
+                          borderRadius: 8,
+                          marginBottom: 10,
+                          flex: 1,
+                        }}
+                      />
 
-                    <TouchableOpacity
-                      onPress={() => deleteNote(item.id)}
-                      style={styles.delete}
-                    >
-                      <Text style={{ color: "white", fontWeight: "600" }}>
-                        Delete
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
+                      <View style={{ flexDirection: "row", gap: 10 }}>
+                        <TouchableOpacity
+                          onPress={updateNote}
+                          style={{
+                            backgroundColor: "#27AE60",
+                            paddingVertical: 8,
+                            paddingHorizontal: 12,
+                            borderRadius: 8,
+                          }}
+                        >
+                          <Text style={{ color: "white", fontWeight: "600" }}>
+                            Save
+                          </Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                          onPress={() => {
+                            setEditingId(null);
+                            setEditingText("");
+                          }}
+                          style={{
+                            backgroundColor: "#999",
+                            paddingVertical: 8,
+                            paddingHorizontal: 12,
+                            borderRadius: 8,
+                          }}
+                        >
+                          <Text style={{ color: "white", fontWeight: "600" }}>
+                            Cancel
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
+                    </>
+                  ) : (
+                    <>
+                      <View style={styles.cardContent}>
+                        <Text style={{ fontSize: 17, marginBottom: 6 }}>
+                          {item.title}
+                        </Text>
+                        <Text
+                          style={{
+                            color: "#777",
+                            fontSize: 13,
+                            marginBottom: 10,
+                          }}
+                        >
+                          🕒 {formatDate(item.createdAt)}
+                        </Text>
+                      </View>
+                      <View style={styles.action}>
+                        <TouchableOpacity
+                          onPress={() => {
+                            setEditingId(item.id);
+                            setEditingText(item.title);
+                          }}
+                          style={styles.edit}
+                        >
+                          <Text style={{ color: "black", fontWeight: "600" }}>
+                            Edit
+                          </Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                          onPress={() => deleteNote(item.id)}
+                          style={styles.delete}
+                        >
+                          <Text style={{ color: "white", fontWeight: "600" }}>
+                            Delete
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
+                    </>
+                  )}
                 </>
               </View>
             );
