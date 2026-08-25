@@ -44,15 +44,19 @@ export default function Index() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [title, setTitle] = useState<string>("");
 
+  //  Edit Mode States
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editingText, setEditingText] = useState<string>("");
+
   const fetchNotes = async () => {
     if (!db) {
       console.error("Error: DB not found");
       return;
     }
     try {
-      const allNotes: Note[] = (await db!.execAsync(
-        `SELECT * FROM notes ORDER BY createdAt DESC`,
-      )) as any;
+      const allNotes: Note[] = await db!.getAllAsync(
+        `SELECT * FROM notes ORDER BY id DESC;`,
+      );
 
       setNotes(allNotes);
     } catch (error) {
@@ -76,6 +80,34 @@ export default function Index() {
     }
   };
 
+  const deleteNote = async (id: number) => {
+    if (!db) return;
+
+    try {
+      await db.runAsync("DELETE FROM notes WHERE id = ?;", [id]);
+      fetchNotes();
+    } catch (error) {
+      console.error("Delete error:", error);
+    }
+  };
+
+  const updateNote = async () => {
+    if (!db || editingId === null || !editingText.trim()) return;
+
+    try {
+      await db.runAsync("UPDATE notes SET title = ? WHERE id = ?;", [
+        editingText.trim(),
+        editingId,
+      ]);
+
+      setEditingId(null);
+      setEditingText("");
+      fetchNotes();
+    } catch (error) {
+      console.error("Update error:", error);
+    }
+  };
+
   const init = () => {
     setIsLoading(true);
     initDatabase()
@@ -84,6 +116,11 @@ export default function Index() {
         fetchNotes();
       })
       .finally(() => setIsLoading(false));
+  };
+
+  const formatDate = (iso: string) => {
+    const d = new Date(iso);
+    return d.toLocaleString();
   };
 
   useEffect(() => {
@@ -113,23 +150,40 @@ export default function Index() {
           keyExtractor={(item: Note) => item.id.toString()}
           renderItem={({ item }) => {
             return (
-              <View
-                style={{
-                  backgroundColor: "#fff",
-                  padding: 15,
-                  borderRadius: 12,
-                  marginBottom: 12,
-                  shadowColor: "#000",
-                  shadowOffset: { width: 0, height: 2 },
-                  shadowOpacity: 0.1,
-                  shadowRadius: 6,
-                  elevation: 3,
-                }}
-              >
-                <>
+              <View style={styles.card}>
+                <View style={styles.cardContent}>
                   <Text style={{ fontSize: 17, marginBottom: 6 }}>
                     {item.title}
                   </Text>
+                  <Text
+                    style={{ color: "#777", fontSize: 13, marginBottom: 10 }}
+                  >
+                    🕒 {formatDate(item.createdAt)}
+                  </Text>
+                </View>
+                <>
+                  <View style={styles.action}>
+                    <TouchableOpacity
+                      onPress={() => {
+                        setEditingId(item.id);
+                        setEditingText(item.title);
+                      }}
+                      style={styles.edit}
+                    >
+                      <Text style={{ color: "black", fontWeight: "600" }}>
+                        Edit
+                      </Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      onPress={() => deleteNote(item.id)}
+                      style={styles.delete}
+                    >
+                      <Text style={{ color: "white", fontWeight: "600" }}>
+                        Delete
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
                 </>
               </View>
             );
@@ -175,5 +229,32 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#c3c3c3",
     borderRadius: 10,
+  },
+  card: {
+    backgroundColor: "#fff",
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 12,
+    elevation: 1,
+    flexDirection: "row",
+  },
+  cardContent: { flex: 1 },
+  action: {
+    flexDirection: "row",
+    gap: 10,
+  },
+  edit: {
+    backgroundColor: "#F1C40F",
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    justifyContent: "center",
+  },
+  delete: {
+    backgroundColor: "#FF5252",
+    paddingVertical: 2,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    justifyContent: "center",
   },
 });
