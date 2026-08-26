@@ -129,7 +129,7 @@ export default function Index() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Notes app yes</Text>
+      <Text style={styles.title}>Notes app </Text>
 
       <View style={styles.form}>
         <TextInput
@@ -286,7 +286,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#c3c3c3",
+    backgroundColor: "#f28e30",
     borderRadius: 10,
   },
   card: {
