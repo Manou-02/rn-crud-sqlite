@@ -129,7 +129,7 @@ export default function Index() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Notes app</Text>
+      <Text style={styles.title}>Notes app 2</Text>
 
       <View style={styles.form}>
         <TextInput
@@ -143,7 +143,7 @@ export default function Index() {
         </TouchableOpacity>
       </View>
 
-      <View>
+      <View style={{ marginBottom: 30 }}>
         {/* Notes List */}
         <FlatList
           data={notes}
