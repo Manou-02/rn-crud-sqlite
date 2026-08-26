@@ -41,7 +41,7 @@ async function initDatabase(): Promise<SQLiteDatabase> {
 
 export default function Index() {
   const [notes, setNotes] = useState<Note[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [, setIsLoading] = useState<boolean>(false);
   const [title, setTitle] = useState<string>("");
 
   //  Edit Mode States
@@ -129,7 +129,7 @@ export default function Index() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Notes app 2</Text>
+      <Text style={styles.title}>Notes app yes</Text>
 
       <View style={styles.form}>
         <TextInput
@@ -139,7 +139,7 @@ export default function Index() {
           onChangeText={setTitle}
         />
         <TouchableOpacity style={styles.button} onPress={addNote}>
-          <Text>Add</Text>
+          <Text> + Add </Text>
         </TouchableOpacity>
       </View>
 
@@ -261,6 +261,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 800,
     marginBottom: 10,
+    color: "#856103",
   },
   form: {
     display: "flex",
